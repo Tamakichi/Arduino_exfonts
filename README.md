@@ -41,14 +41,14 @@ https://github.com/Tamakichi/Arduino-W25Q64
 
 
 ## 利用例  
-Arduino Uno互換機でTVoutライブラリを使った日本語テキストの表示例
- <img src="img/hard.jpg" width="300">
+Arduino Uno互換機でTVoutライブラリを使った日本語テキストの表示例  
+ <img src="img/hard.jpg" width="300">    
 
- Arduino STM32対応ボード（Black Pillボード）でTTVoutライブラリを使った日本語テキスト表示例
+Arduino STM32対応ボード（Black Pillボード）でTTVoutライブラリを使った日本語テキスト表示例  
 
- <img src="img/hard2.jpg" width="300"> 
+ <img src="img/hard2.jpg" width="300">  
 
-
+  
 
 ## サポートするフォントの詳細
 
