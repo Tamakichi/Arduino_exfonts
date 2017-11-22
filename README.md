@@ -32,9 +32,13 @@ https://github.com/Tamakichi/Arduino-W25Q64
 
 ## 利用環境
 - Arduino及びその互換機  、Arduino STM32がサポートするSTMF32F103C8T6ボード  
+
 - 開発環境 Arduino IDE 1.8.x  
-- SPI接続フラッシュメモリ W25Q64BV（同インタフェース25xxx系列2Mバイト以上でも可能）
+
+- SPI接続フラッシュメモリ W25Q64BV（同インタフェース25xxx系列2Mバイト以上でも可能）  
+  SPIフラッシュメモリにはフォントデータ**exfontbin/u_exfont.bin**を書き込みます。  
   Arduinoでの利用（左：‘3.3V対応時、右：5V環境でのレベルシフト対応）  
+
   <img src="img/01.jpg"> <img src="img/02.png">   
   Arduino STM32 Blue Pillボードでの利用  
   <img src="img/03.jpg">   
