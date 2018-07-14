@@ -40,8 +40,8 @@ https://github.com/Tamakichi/Arduino-W25Q64
   Arduinoでの利用（左：‘3.3V対応時、右：5V環境でのレベルシフト対応）  
 
   <img src="img/01.jpg"> <img src="img/02.png">   
-  Arduino STM32 Blue Pillボードでの利用  
-  <img src="img/03.jpg">   
+  Arduino STM32 Blue Pillボードでの利用例  
+  <img src="img/Schematic4.png">   
 
 
 ## 利用例  
@@ -113,7 +113,7 @@ Arduino STM32対応ボード（Black Pillボード）でTTVoutライブラリを
 
 **メンバー関数一覧**  
 - 初期化  
-  `void init(uint8_t cs=10);`  
+  `void init(uint8_t cs=10,SPIClass& rSPI =SPI,uint32_t frq=8000000);`  
   フォント利用のための初期設定を行います。  
   引数csにはSPI接続フラッシュメモリのCSピンの番号を指定します。  
 
@@ -133,13 +133,21 @@ Arduino STM32対応ボード（Black Pillボード）でTTVoutライブラリを
 
   ​
 
-- フォントデータの取得  
+- 指定したUTF16コードに該当するフォントデータの取得  
   `boolean getFontData(byte* fontdata,uint16_t utf16);`
 
   utf16に指定したUTF16フォントコードに該当するフォントデータを取得し、fontdataに格納します。  
   戻り値として、正常時はtrue、異常時はfalseを返します。   
 
   ​
+
+- 指定したUTF8文字列の先頭のフォントデータの取得  
+  `char* getFontData(byte* fontdata,char *pUTF8);`
+
+  pUTF8で指定したUTF-8形式の文字列の先頭文字に対応するフォントデータをfontdataに返します。  
+  戻り値として、次の文字位置を返します。文字列の終了(\0)に達した場合は、*pUTF8にはそのポインタが返されます。  
+  変換に失敗した場合はNULLを返します。  
+    ​
 
 - フォント横のバイト数取得  
   `uint8_t getRowLength()`  

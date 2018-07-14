@@ -7,7 +7,7 @@
 #include <W25Q64.h>
 #include <exfonts.h>
 #if defined (__STM32F1__)   
-#define CSPIN PA4
+#define CSPIN PB0
 #else
 #define CSPIN 10
 #endif

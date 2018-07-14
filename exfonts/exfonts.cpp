@@ -3,41 +3,45 @@
 // 作成 2014/10/20 by Tamakichi
 // 修正 2015/01/27 by Tamakichi
 // 修正 2017/11/18  by Tamakitchi,init()でcsピン指定可能に修正
+// 修正 2018/07/14  by Tamakitchi,init()でSPIオブジェクト、SPIクロック周波数指定可能に修正
 
-#define NEWGENE 1
+#define NEWGENE 0
 
 #include <exfonts.h>
+#include <avr/pgmspace.h>
 #if NEWGENE == 1
  #include <u_table.h>
 #else
-static FontInfo _finfo[EXFONTNUM] = {
-  { 0x000000,0x00013C, 158,  8,  4, 8},  // 0:美咲フォント半角4x8
-  { 0x00062C,0x00082C, 256, 10,  5,10},  // 1:半角5x10
-  { 0x00122C,0x00142C, 256, 12,  6,12},  // 2:半角6x12
-  { 0x00202C,0x0021E6, 221, 14,  7,14},  // 3:半角7x14
-  { 0x002DFC,0x002FB6, 221, 16,  8,16},  // 4:半角8x16
-  { 0x003D86,0x003F02, 190, 40, 10,20},  // 5:半角10x20
-  { 0x005CB2,0x005E6C, 221, 48, 12,24},  // 6:半角12x24
-  { 0x0087DC,0x00BE40,6962,  8,  8, 8},  // 7:美咲フォント全角 8x8 
-  { 0x0197D0,0x01CD8A,6877, 20, 10,10},  // 8:nagaフォント全角 10x10
-  { 0x03E6CE,0x041C8C,6879, 24, 12,12},  // 9:東雲フォント全角 12x12
-  { 0x06A174,0x06D732,6879, 28, 14,14},  // 10:東雲フォント全角 14x14
-  { 0x09C796,0x09FD54,6879, 32, 16,16},  // 11:東雲フォント全角 16x16
-  { 0x0D5934,0x0D8EF2,6879, 60, 20,20},  // 12:Jiskan全角 20x20
-  { 0x13DB36,0x1410F0,6877, 72, 24,24}   // 13:Jiskan全角 24x24
+const static FontInfo _finfo[EXFONTNUM] = {
+	{ 0x000000, 0x00017E,  191,  8,  4,  8 }, // 0:美咲フォント半角4x8
+	{ 0x000776, 0x000976,  256, 10,  5, 10 }, // 1:半角5x10
+	{ 0x001376, 0x001576,  256, 12,  6, 12 }, // 2:半角6x12
+	{ 0x002176, 0x002330,  221, 14,  7, 14 }, // 3:半角7x14
+	{ 0x002F46, 0x003100,  221, 16,  8, 16 }, // 4:半角8x16
+	{ 0x003ED0, 0x00404C,  190, 40, 10, 20 }, // 5:半角10x20
+	{ 0x005DFC, 0x005FB6,  221, 48, 12, 24 }, // 6:半角12x24
+	{ 0x008926, 0x00BEE4, 6879,  8,  8,  8 }, // 7:美咲フォント全角 8x8 
+	{ 0x0195DC, 0x01CB96, 6877, 20, 10, 10 }, // 8:nagaフォント全角 10x10
+	{ 0x03E4DA, 0x041A98, 6879, 24, 12, 12 }, // 9:東雲フォント全角 12x12
+	{ 0x069F80, 0x06D53E, 6879, 28, 14, 14 }, // 10:東雲フォント全角 14x14
+	{ 0x09C5A2, 0x09FB60, 6879, 32, 16, 16 }, // 11:東雲フォント全角 16x16
+	{ 0x0D5740, 0x0D8CFE, 6879, 60, 20, 20 }, // 12:Jiskan全角 20x20
+	{ 0x13D942, 0x140EFC, 6877, 72, 24, 24 }, // 13:Jiskan全角 24x24
 };
 #endif
 
 // 半角カナ全角変換テーブル
-static uint8_t _hkremap [] = {
+const static uint8_t _hkremap [] = {
    0x02,0x0C,0x0D,0x01,0xFB,0xF2,0xA1,0xA3,0xA5,0xA7,0xA9,0xE3,0xE5,0xE7,0xC3,0xFD,
    0xA2,0xA4,0xA6,0xA8,0xAA,0xAB,0xAD,0xAF,0xB1,0xB3,0xB5,0xB7,0xB9,0xBB,0xBD,0xBF,
    0xC1,0xC4,0xC6,0xC8,0xCA,0xCB,0xCC,0xCD,0xCE,0xCF,0xD2,0xD5,0xD8,0xDB,0xDE,0xDF,
    0xE0,0xE1,0xE2,0xE4,0xE6,0xE8,0xE9,0xEA,0xEB,0xEC,0xED,0xEF,0xF3,0x9B,0x9C
 };
 
-  void exfonts::init(uint8_t cs) {
-    W25Q64_begin(cs);        // フラッシュメモリ利用開始
+ // 初期化
+  void exfonts::init(uint8_t cs,SPIClass& rSPI,uint32_t frq) {
+    W25Q64_seSPIPort(rSPI);
+    W25Q64_begin(cs, frq); // フラッシュメモリ利用開始
   }
 
   // 利用フォント種類の設定 fno : フォント種別番号 (0-13)
@@ -215,6 +219,26 @@ static uint8_t _hkremap [] = {
     rc = getFontDataByUTF16(fontdata, utf16);
     //setFont(oldfont);
   }
+
+// 指定したUTF8文字列の先頭のフォントデータの取得
+//   data(out): フォントデータ格納アドレス
+//   utf8(in) : UTF8文字列
+//   戻り値   : 次の文字列位置、取得失敗の場合NULLを返す
+//
+char* exfonts::getFontData(byte* fontdata,char *pUTF8) {
+  uint16_t utf16;
+  uint8_t  n;
+  if (pUTF8 == NULL)
+    return NULL;
+  if (*pUTF8 == 0) 
+    return NULL;   
+  n = charUFT8toUTF16(pUTF8, &utf16);
+  if (n == 0)
+    return NULL;  
+  if (false == getFontData(fontdata, utf16) ) 
+    return NULL;
+  return (pUTF8+n);
+}
 
   //
   // UTF16に対応するフォントデータを取得する

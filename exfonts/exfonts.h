@@ -4,6 +4,7 @@
 // 修正 2015/01/24  by Tamakitchi
 // 修正 2017/11/18  by Tamakitchi,init()でcsピン指定可能に修正
 // 修正 2017/11/18  by Tamakitchi,Utf8ToUtf16()の戻り値をint16_t型に修正
+// 修正 2018/07/14  by Tamakitchi,init()でSPIオブジェクト、SPIクロック周波数指定可能に修正
 
 #ifndef ___exfonts_h___
  #define ___exfonts_h___
@@ -44,11 +45,18 @@ class exfonts {
 
   // メンバー関数
   public:
-    exfonts() {_fontSize=EXFONT8; _fontNo =EXFONT8+FULL_OFST;};
-    void init(uint8_t cs=10);                           // 初期化
+    exfonts() {                                         // コンストラクタ
+      _fontSize=EXFONT8; 
+      _fontNo =EXFONT8+FULL_OFST;
+    };
+  
+    void init(uint8_t cs=10,                            // 初期化
+              SPIClass& rSPI =SPI,
+              uint32_t frq=8000000); 
     void setFontSize(uint8_t sz);                       // 利用サイズの設定
     uint8_t getFontSize();                              // 現在利用フォントサイズの取得      
     boolean getFontData(byte* fontdata,uint16_t utf16); // サイズに該当するフォントデータの取得
+    char*   getFontData(byte* fontdata,char *pUTF8);    // 指定したUTF8文字列の先頭のフォントデータの取得
     uint8_t getRowLength();                             // 1行のバイト数
     uint8_t getWidth();                                 // 現在利用フォントの幅の取得
     uint8_t getHeight();                                // 現在利用フォントの高さの取得
