@@ -4,6 +4,7 @@
 // 修正 2015/01/27 by Tamakichi
 // 修正 2017/11/18  by Tamakitchi,init()でcsピン指定可能に修正
 // 修正 2018/07/14  by Tamakitchi,init()でSPIオブジェクト、SPIクロック周波数指定可能に修正
+// 修正 2018/07/27  by Tamakitchi,init()でW25Q64_seSPIPort(rSPI) ->W25Q64_setSPIPort(rSPI)に修正
 
 #define NEWGENE 0
 
@@ -40,7 +41,7 @@ const static uint8_t _hkremap [] = {
 
  // 初期化
   void exfonts::init(uint8_t cs,SPIClass& rSPI,uint32_t frq) {
-    W25Q64_seSPIPort(rSPI);
+    W25Q64_setSPIPort(rSPI);
     W25Q64_begin(cs, frq); // フラッシュメモリ利用開始
   }
 
